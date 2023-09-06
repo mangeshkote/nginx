@@ -30,7 +30,7 @@ pipeline {
                 withCredentials([sshUserPrivateKey(credentialsId: 'nginx-server', keyFileVariable: 'nginx-server', passphraseVariable: 'nginx-pass', usernameVariable: 'nginx-user')]) {
                     sh "docker login -u ${env.dockerhub-user} -p ${env.docker-pass}"
                     sh "docker pull ${env.dockerHubUser}/my-note-app:latest"
-                    #sh "docker-compose down && docker-compose up -d"
+                    //sh "docker-compose down && docker-compose up -d"
                 }
             }
         }
