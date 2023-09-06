@@ -30,9 +30,11 @@ pipeline {
                 withCredentials([sshUserPrivateKey(credentialsId: 'nginx-server', keyFileVariable: 'nginx-server', passphraseVariable: 'nginx-pass', usernameVariable: 'nginx-user')]) {
                 sshagent(['nginx-server']) {
                     sh "ssh -o StrictHostKeyChecking=no ec2-user@13.127.96.24"
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub1', passwordVariable: 'dockerhubpass', usernameVariable: 'dockerhubuser')]) {
                     sh "docker login -u ${env.dockerhubuser} -p ${env.dockerhubpass}"
                     sh "docker pull ${env.dockerhubuser}/my-note-app:latest"
                     //sh "docker-compose down && docker-compose up -d"
+                    }
                   }
                 }      
             }
