@@ -11,7 +11,6 @@ pipeline {
         stage("Build"){
             steps {
                 echo "Building the image"
-                sh "docker login -u ${env.dockerhub-user} -p ${env.docker-pass}"
                 sh "docker build -t my-note-app ."
             }
         }
