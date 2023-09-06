@@ -17,9 +17,9 @@ pipeline {
         stage("Push to Docker Hub"){
             steps {
                 echo "Pushing the image to docker hub"
-                withCredentials([usernamePassword(credentialsId:"dockerHub",passwordVariable:"dockerHubPass",usernameVariable:"dockerHubUser")]){
-                sh "docker tag my-note-app ${env.dockerHubUser}/my-note-app:latest"
-                sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPass}"
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'docker-pass', usernameVariable: 'dockerhub-user')]) {
+                sh "docker tag my-note-app ${env.dockerhub-user}/my-note-app:latest"
+                sh "docker login -u ${env.dockerHubUser} -p ${env.docker-pass}"
                 sh "docker push ${env.dockerHubUser}/my-note-app:latest"
                 }
             }
@@ -27,8 +27,10 @@ pipeline {
         stage("Deploy"){
             steps {
                 echo "Deploying the container"
-                sh "docker-compose down && docker-compose up -d"
-                
+                withCredentials([sshUserPrivateKey(credentialsId: 'nginx-server', keyFileVariable: 'nginx-server', passphraseVariable: 'nginx-pass', usernameVariable: 'nginx-user')]) {
+                    sh "docker login -u ${env.dockerhub-user} -p ${env.docker-pass}"
+                    sh "docker-compose down && docker-compose up -d"
+                }
             }
         }
     }
